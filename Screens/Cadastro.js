@@ -13,8 +13,18 @@ import {
   Platform,
 } from 'react-native';
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebaseConfig';
+import {
+  createUserWithEmailAndPassword,
+  deleteUser
+} from 'firebase/auth';
+
+import { auth, db } from '../firebaseConfig';
+
+import {
+  doc,
+  runTransaction,
+  serverTimestamp
+} from 'firebase/firestore';
 
 export default function Cadastro({ navigation }) {
   const [nome, setNome] = useState('');
@@ -22,25 +32,110 @@ export default function Cadastro({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
-  const cadastrar = async () => {
-    if (!nome || !matricula || !email || !senha) {
-      Alert.alert('Atenção', 'Preencha todos os campos.');
-      return;
+  
+
+const cadastrar = async () => {
+  if (
+    !nome.trim() ||
+    !matricula.trim() ||
+    !email.trim() ||
+    !senha
+  ) {
+    Alert.alert('Atenção', 'Preencha todos os campos.');
+    return;
+  }
+
+  const matriculaFormatada = matricula.trim();
+  const emailFormatado = email.trim().toLowerCase();
+
+  // Evita problemas com caminhos de documentos
+  if (matriculaFormatada.includes('/')) {
+    Alert.alert('Atenção', 'Verifique a matrícula informada.');
+    return;
+  }
+
+  let usuarioCriado = null;
+
+  try {
+    // 1. Cria a conta no Authentication
+    const resultado = await createUserWithEmailAndPassword(
+      auth,
+      emailFormatado,
+      senha
+    );
+
+    usuarioCriado = resultado.user;
+
+    const usuarioRef = doc(db, 'usuarios', usuarioCriado.uid);
+    const matriculaRef = doc(db, 'matriculas', matriculaFormatada);
+
+    // 2. Reserva a matrícula e grava o perfil
+    // na mesma transação do Firestore
+    await runTransaction(db, async (transacao) => {
+      const matriculaExistente = await transacao.get(matriculaRef);
+
+      if (matriculaExistente.exists()) {
+        throw new Error('MATRICULA_EM_USO');
+      }
+
+      transacao.set(matriculaRef, {
+        uid: usuarioCriado.uid
+      });
+
+      transacao.set(usuarioRef, {
+        nome: nome.trim(),
+        matricula: matriculaFormatada,
+        email: emailFormatado,
+        tipo: 'discente',
+        criadoEm: serverTimestamp()
+      });
+    });
+
+    Alert.alert(
+      'Sucesso',
+      'Cadastro realizado com sucesso!',
+      [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('Login')
+        }
+      ]
+    );
+
+  } catch (error) {
+    console.log('ERRO NO CADASTRO:', error);
+
+    // Se o perfil não foi gravado, tenta remover
+    // a conta recém-criada para evitar cadastro incompleto.
+    if (usuarioCriado) {
+      try {
+        await deleteUser(usuarioCriado);
+      } catch (erroExclusao) {
+        console.log(
+          'Não foi possível remover a conta criada:',
+          erroExclusao
+        );
+      }
     }
 
-    try {
-      await createUserWithEmailAndPassword(auth, email, senha);
-
-      Alert.alert('Sucesso', 'Conta criada com sucesso!');
-
-      navigation.navigate('Login');
-    } catch (error) {
-      console.log('ERRO DO FIREBASE:', error);
-
-      Alert.alert('Erro no cadastro', error.code + '\n\n' + error.message);
+    if (error.message === 'MATRICULA_EM_USO') {
+      Alert.alert(
+        'Matrícula já cadastrada',
+        'Essa matrícula já está sendo utilizada. Verifique os dados.'
+      );
+    } else if (error.code === 'auth/email-already-in-use') {
+      Alert.alert(
+        'E-mail já cadastrado',
+        'Já existe uma conta com esse e-mail.'
+      );
+    } else {
+      Alert.alert(
+        'Erro no cadastro',
+        'Não foi possível concluir o cadastro. Confira sua conexão e as regras do Firestore.'
+      );
     }
-  };
-
+  }
+};
   return (
     <KeyboardAvoidingView
       style={styles.container}
