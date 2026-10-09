@@ -6,6 +6,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './Screens/Login';
 import Cadastro from './Screens/Cadastro';
 import Home from './Screens/Home';
+import Acervo from './Screens/Acervo';
+import Avisos from './Screens/Avisos';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +37,27 @@ export default function App() {
             headerBackVisible: false,
           }}
         />
+
+        <Stack.Screen
+          name="Acervo"
+          component={Acervo}
+          options={{
+            title: 'Acervo',
+            headerBackVisible: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Avisos"
+          component={Avisos}
+          options={{
+            title: 'Avisos',
+            headerBackVisible: false,
+          }}
+        />
+
+
+
 
       </Stack.Navigator>
     </NavigationContainer>

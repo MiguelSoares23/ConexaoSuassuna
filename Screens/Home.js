@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 import {
@@ -14,25 +15,20 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
 
-      {/* ============================= */}
       {/* CONTEÚDO COM ROLAGEM */}
-      {/* ============================= */}
-
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scroll}
         showsVerticalScrollIndicator={false}
       >
 
-        {/* ============================= */}
         {/* CABEÇALHO */}
-        {/* ============================= */}
-
         <View style={styles.header}>
 
           <Image
-            source={require('../assets/juca.png')}
+            source={require('../assets/jucaa.png')}
             style={styles.logo}
+            resizeMode="contain"
           />
 
           <ScrollView
@@ -42,41 +38,57 @@ export default function Home({ navigation }) {
             contentContainerStyle={styles.menuConteudo}
           >
 
-            <TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('Avisos')}
+            >
               <Text style={styles.menuTexto}>
                 AVISOS
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('Home')}
+            >
               <Text style={[styles.menuTexto, styles.menuAtivo]}>
                 DESTAQUES
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Acervo')}
+              activeOpacity={0.8}
+            >
               <Text style={styles.menuTexto}>
                 ACERVO
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('MinhasReservas')}
+            >
               <Text style={styles.menuTexto}>
                 MINHAS RESERVAS
               </Text>
             </TouchableOpacity>
 
-          </ScrollView>
+            {/* FEED LITERÁRIO */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('FeedLiterario')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.menuTexto}>
+                FEED LITERÁRIO
+              </Text>
+            </TouchableOpacity>
 
+          </ScrollView>
         </View>
 
-
-        {/* ============================= */}
         {/* PESQUISA */}
-        {/* ============================= */}
-
         <View style={styles.pesquisaContainer}>
-
           <TextInput
             style={styles.pesquisa}
             placeholder="Pesquisar livros..."
@@ -86,14 +98,9 @@ export default function Home({ navigation }) {
           <Text style={styles.lupa}>
             🔍
           </Text>
-
         </View>
 
-
-        {/* ============================= */}
         {/* LIVROS POPULARES */}
-        {/* ============================= */}
-
         <View style={styles.secao}>
 
           <Text style={styles.tituloSecao}>
@@ -157,14 +164,9 @@ export default function Home({ navigation }) {
             </TouchableOpacity>
 
           </ScrollView>
-
         </View>
 
-
-        {/* ============================= */}
         {/* AVISOS RECENTES */}
-        {/* ============================= */}
-
         <View style={styles.secaoAvisos}>
 
           <Text style={styles.tituloSecao}>
@@ -220,19 +222,14 @@ export default function Home({ navigation }) {
             </View>
 
           </ScrollView>
-
         </View>
 
-        {/* Espaço para o conteúdo não ficar escondido atrás do footer */}
+        {/* ESPAÇO ANTES DO RODAPÉ */}
         <View style={styles.espacoFooter} />
 
       </ScrollView>
 
-
-      {/* ============================= */}
-      {/* FOOTER FIXO */}
-      {/* ============================= */}
-
+      {/* RODAPÉ FIXO */}
       <View style={styles.footer}>
 
         <Text style={styles.footerTexto}>
@@ -249,12 +246,7 @@ export default function Home({ navigation }) {
   );
 }
 
-
 const styles = StyleSheet.create({
-
-  // =====================================
-  // TELA
-  // =====================================
 
   container: {
     flex: 1,
@@ -269,11 +261,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
 
-
-  // =====================================
   // CABEÇALHO
-  // =====================================
-
   header: {
     width: '100%',
     minHeight: 105,
@@ -312,11 +300,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'none',
   },
 
-
-  // =====================================
   // PESQUISA
-  // =====================================
-
   pesquisaContainer: {
     height: 40,
     marginHorizontal: 15,
@@ -343,11 +327,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
 
-
-  // =====================================
   // SEÇÕES
-  // =====================================
-
   secao: {
     marginTop: 5,
   },
@@ -364,11 +344,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
 
-
-  // =====================================
   // LIVROS
-  // =====================================
-
   listaLivros: {
     paddingHorizontal: 8,
   },
@@ -390,11 +366,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
 
-
-  // =====================================
   // AVISOS
-  // =====================================
-
   listaAvisos: {
     paddingHorizontal: 8,
   },
@@ -416,28 +388,18 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-
-  // =====================================
-  // ESPAÇO ANTES DO FOOTER
-  // =====================================
-
+  // ESPAÇO ANTES DO RODAPÉ
   espacoFooter: {
     height: 25,
   },
 
-
-  // =====================================
-  // FOOTER FIXO
-  // =====================================
-
+  // RODAPÉ FIXO
   footer: {
     width: '100%',
     height: 70,
     backgroundColor: '#145000',
-
     alignItems: 'center',
     justifyContent: 'center',
-
     flexShrink: 0,
   },
 
