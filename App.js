@@ -8,14 +8,20 @@ import Cadastro from './Screens/Cadastro';
 import Home from './Screens/Home';
 import Acervo from './Screens/Acervo';
 import Avisos from './Screens/Avisos';
-
+import SelecaoPerfil from './Screens/SelecaoPerfil';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="SelecaoPerfil">
+
+        <Stack.Screen
+  name="SelecaoPerfil"
+  component={SelecaoPerfil}
+  options={{ headerShown: false }}
+/>
 
         <Stack.Screen
           name="Login"
