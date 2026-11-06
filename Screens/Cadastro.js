@@ -48,6 +48,16 @@ const cadastrar = async () => {
   const matriculaFormatada = matricula.trim();
   const emailFormatado = email.trim().toLowerCase();
 
+  // Verifica se o e-mail é institucional de discente
+if (!emailFormatado.endsWith('@discente.ifpe.edu.br')) {
+  Alert.alert(
+    'E-mail inválido',
+    'O cadastro de usuários deve utilizar um e-mail terminado em @discente.ifpe.edu.br.'
+  );
+
+  return;
+}
+
   // Evita problemas com caminhos de documentos
   if (matriculaFormatada.includes('/')) {
     Alert.alert('Atenção', 'Verifique a matrícula informada.');
